@@ -3,9 +3,9 @@ package mysql
 import (
 	"context"
 	"errors"
-	"github.com/DATA-DOG/go-sqlmock"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	mooc "github.com/juanegido/hexapi/internal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
