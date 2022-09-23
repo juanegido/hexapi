@@ -77,19 +77,19 @@ func (duration CourseDuration) String() string {
 	return duration.value
 }
 
-// CourseRepository defines the expected behaviour from a course storage.
-type CourseRepository interface {
-	Save(ctx context.Context, course Course) error
-}
-
-//go:generate mockery --case=snake --outpkg=storagemocks --output=platform/storage/storagemocks --name=CourseRepository
-
 // Course is the data structure that represents a course.
 type Course struct {
 	id       CourseID
 	name     CourseName
 	duration CourseDuration
 }
+
+// CourseRepository defines the expected behaviour from a course storage.
+type CourseRepository interface {
+	Save(ctx context.Context, course Course) error
+}
+
+//go:generate mockery --case=snake --outpkg=storagemocks --output=platform/storage/storagemocks --name=CourseRepository
 
 // NewCourse creates a new course.
 func NewCourse(id, name, duration string) (Course, error) {
