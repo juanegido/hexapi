@@ -3,14 +3,15 @@ package courses
 import (
 	"bytes"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/juanegido/hexapi/internal/platform/storage/storagemocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"net/http"
-	"net/http/httptest"
-	"testing"
 )
 
 func TestHandler_Create(t *testing.T) {
@@ -22,9 +23,9 @@ func TestHandler_Create(t *testing.T) {
 	r.POST("/courses", CreateHandler(courseRepository))
 
 	t.Run("given an invalid request it returns 400", func(t *testing.T) {
-		createCourseReq := CreateRequest{
-			ID:   "8a1c5cdc-ba57-445a-994d-aa412d23723f",
-			Name: "Demo Course",
+		createCourseReq := createRequest{
+			Name:     "Demo Course",
+			Duration: "10 months",
 		}
 
 		b, err := json.Marshal(createCourseReq)
@@ -43,8 +44,8 @@ func TestHandler_Create(t *testing.T) {
 	})
 
 	t.Run("given a valid request it returns 201", func(t *testing.T) {
-		createCourseReq := CreateRequest{
-			ID:       "8a1c5cdc-ba57-445a-994d-aa412d23723f",
+		createCourseReq := createRequest{
+			ID:       "juan",
 			Name:     "Demo Course",
 			Duration: "10 months",
 		}
