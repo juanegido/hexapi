@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"database/sql"
 	"fmt"
+	"github.com/juanegido/hexapi/internal/fetching"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/juanegido/hexapi/internal/creating"
@@ -30,16 +31,20 @@ func Run() error {
 	}
 
 	var (
-		commandBus = inmemory.NewCommandBus()
+		bus = inmemory.NewCommandBus()
 	)
 
 	courseRepository := mysql.NewCourseRepository(db)
 
 	creatingCourseService := creating.NewCourseService(courseRepository)
+	fetchingCourseService := fetching.NewCourseFetchingService(courseRepository)
 
 	createCourseCommandHandler := creating.NewCourseCommandHandler(creatingCourseService)
-	commandBus.Register(creating.CourseCommandType, createCourseCommandHandler)
+	fetchingCourseQueryHandler := fetching.NewCourseQueryHandler(fetchingCourseService)
 
-	srv := server.New(host, port, commandBus)
+	bus.RegisterCommandHandler(creating.CourseCommandType, createCourseCommandHandler)
+	bus.RegisterQueryHandler(fetching.CourseQueryType, fetchingCourseQueryHandler)
+
+	srv := server.New(host, port, bus)
 	return srv.Run()
 }

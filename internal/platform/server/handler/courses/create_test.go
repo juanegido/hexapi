@@ -8,23 +8,23 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/juanegido/hexapi/kit/command/commandmocks"
+	"github.com/juanegido/hexapi/kit/bus/busmocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestHandler_Create(t *testing.T) {
-	commandBus := new(commandmocks.Bus)
-	commandBus.On(
-		"Dispatch",
+	bus := new(busmocks.Bus)
+	bus.On(
+		"DispatchCommand",
 		mock.Anything,
 		mock.AnythingOfType("creating.CourseCommand"),
 	).Return(nil)
 
 	gin.SetMode(gin.TestMode)
 	r := gin.New()
-	r.POST("/courses", CreateHandler(commandBus))
+	r.POST("/courses", CreateHandler(bus))
 
 	t.Run("given an invalid request it returns 400", func(t *testing.T) {
 		createCourseReq := createRequest{

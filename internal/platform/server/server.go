@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/juanegido/hexapi/internal/platform/server/handler/courses"
 	"github.com/juanegido/hexapi/internal/platform/server/handler/health"
-	"github.com/juanegido/hexapi/kit/command"
+	"github.com/juanegido/hexapi/kit/bus"
 )
 
 type Server struct {
@@ -15,15 +15,15 @@ type Server struct {
 	engine   *gin.Engine
 
 	// deps
-	commandBus command.Bus
+	bus bus.Bus
 }
 
-func New(host string, port uint, commandBus command.Bus) Server {
+func New(host string, port uint, bus bus.Bus) Server {
 	srv := Server{
 		engine:   gin.New(),
 		httpAddr: fmt.Sprintf("%s:%d", host, port),
 
-		commandBus: commandBus,
+		bus: bus,
 	}
 
 	srv.registerRoutes()
@@ -37,5 +37,6 @@ func (s *Server) Run() error {
 
 func (s *Server) registerRoutes() {
 	s.engine.GET("/health", health.CheckHandler())
-	s.engine.POST("/courses", courses.CreateHandler(s.commandBus))
+	s.engine.POST("/courses", courses.CreateHandler(s.bus))
+	s.engine.GET("/courses", courses.GetHandler(s.bus))
 }
