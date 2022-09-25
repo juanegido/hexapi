@@ -30,15 +30,6 @@ func (b *Bus) DispatchCommand(ctx context.Context, cmd bus.Command) error {
 		return nil
 	}
 
-	// Si dejo este asincronismo sucede que el endpoint del controller responde 201, cuando en verdad fallo. No tiene más sentido que el asincrnismo lo maneje el que lo llama?
-	/*go func() {
-		err := handler.Handle(ctx, cmd)
-		if err != nil {
-			log.Printf("Error while handling %s - %s\n", cmd.Type(), err)
-		}
-
-	}()*/
-
 	return handler.Handle(ctx, cmd)
 }
 

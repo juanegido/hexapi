@@ -20,11 +20,11 @@ const (
 
 	shutdownTimeout = 10 * time.Second
 
-	dbUser       = "codely"
-	dbPass       = "codely"
+	dbUser       = "root"
+	dbPass       = "root"
 	dbHost       = "localhost"
 	dbPort       = "3306"
-	dbName       = "codely"
+	dbName       = "hexapi"
 	queryTimeout = 1 * time.Second
 )
 
@@ -40,8 +40,6 @@ func Run() error {
 	)
 
 	courseRepository := mysql.NewCourseRepository(db, queryTimeout)
-
-	//Implementing the recovery middleware
 
 	creatingCourseService := creating.NewCourseService(courseRepository)
 	fetchingCourseService := fetching.NewCourseFetchingService(courseRepository)
