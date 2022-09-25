@@ -1,9 +1,11 @@
 package bootstrap
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/juanegido/hexapi/internal/fetching"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/juanegido/hexapi/internal/creating"
@@ -15,6 +17,8 @@ import (
 const (
 	host = "localhost"
 	port = 8080
+
+	shutdownTimeout = 10 * time.Second
 
 	dbUser = "codely"
 	dbPass = "codely"
@@ -45,6 +49,6 @@ func Run() error {
 	bus.RegisterCommandHandler(creating.CourseCommandType, createCourseCommandHandler)
 	bus.RegisterQueryHandler(fetching.CourseQueryType, fetchingCourseQueryHandler)
 
-	srv := server.New(host, port, bus)
-	return srv.Run()
+	ctx, srv := server.New(context.Background(), host, port, shutdownTimeout, bus)
+	return srv.Run(ctx)
 }
