@@ -3,6 +3,8 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/juanegido/hexapi/internal/platform/server/middleware/logging"
+	"github.com/juanegido/hexapi/internal/platform/server/middleware/recovery"
 	"log"
 	"net/http"
 	"os"
@@ -40,6 +42,7 @@ func New(ctx context.Context, host string, port uint, shutdownTimeout time.Durat
 }
 
 func (s *Server) registerRoutes() {
+	s.engine.Use(recovery.Middleware(), logging.Middleware())
 	s.engine.GET("/health", health.CheckHandler())
 	s.engine.POST("/courses", courses.CreateHandler(s.bus))
 }
